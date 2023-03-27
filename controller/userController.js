@@ -2,12 +2,14 @@ const { db } = require('../models/mongoDB');
 
 module.exports.getUserData = async function getUserData(req, res) {
     try {
-        const { email } = req.body;
 
-        let data = await db.find( {email : email} );
+        // const { email } = req.body;
+        // console.log(email);
+
+        let userData = await db.find();
 
         res.status(200).json({
-            data : data
+            userData : userData[1]
         });
     } catch (err) {
         console.log(err);
