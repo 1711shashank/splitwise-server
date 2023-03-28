@@ -17,9 +17,11 @@ const datasheet = mongoose.Schema([{
     name: String,
     chatCard: [
         {
-            inboxId: String,
+            inboxType: String,
             inboxName : String,
+            inboxMember:[],
             messageCard:[]
+
         }
     ]
 }])
