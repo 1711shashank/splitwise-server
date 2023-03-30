@@ -1,5 +1,35 @@
 const { db } = require('../models/mongoDB');
 
+module.exports.sentMessage = async function sentMessage(req, res) {
+    try {
+
+        const { userId, inboxId, amount, date, message, messageStatus } = req.body.newEntry;
+        
+        const myData = await db.findOne({ _id : userId});
+
+        const newMessageEntry = {
+            senderName: myData.name,
+            amount: amount,
+            date: date,
+            message: message,
+            messageStatus: messageStatus
+        }
+
+        await db.findOneAndUpdate(
+            { _id: userId, "chatCard._id": inboxId },
+            { $addToSet: { 'chatCard.$.messageCard': newMessageEntry } }, 
+            { upsert: true, new: true } 
+        );
+
+        console.log(await db.findOne({ _id : userId}));
+        
+        res.status(200).json({
+            userData : "message Sent"
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
 module.exports.createGroup = async function createGroup(req, res) {
     try {
 
@@ -34,13 +64,10 @@ module.exports.createGroup = async function createGroup(req, res) {
 module.exports.getUserData = async function getUserData(req, res) {
     try {
 
-        // const { email } = req.body;
-        // console.log(email);
-
         let userData = await db.find();
 
         res.status(200).json({
-            userData : userData[1]
+            userData : userData[0]
         });
     } catch (err) {
         console.log(err);

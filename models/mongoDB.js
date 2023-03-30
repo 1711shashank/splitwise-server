@@ -21,7 +21,6 @@ const datasheet = mongoose.Schema([{
             inboxName : String,
             inboxMember:[],
             messageCard:[]
-
         }
     ]
 }])

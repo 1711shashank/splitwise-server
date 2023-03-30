@@ -1,5 +1,5 @@
 const express = require("express");
-const { getUserList, createGroup, getUserData, addUserData } = require('./controller/userController');
+const { sentMessage, getUserList, createGroup, getUserData, addUserData } = require('./controller/userController');
 
 const app = express();
 var cors = require("cors");
@@ -18,6 +18,7 @@ app.listen(port);
 app.get("/getUserList", getUserList);
 
 app.post("/createGroup", createGroup);
+app.post("/sentMessage", sentMessage);
 
 app.get("/getUserData", getUserData);
 app.post("/addUserData", addUserData);
