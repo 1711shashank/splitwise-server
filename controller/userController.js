@@ -3,22 +3,24 @@ const { inboxsDataBase } = require('../models/mongoDB');
 module.exports.sentMessage = async function sentMessage(req, res) {
     try {
 
-        const { email } = req.body;
-
-        console.log(email);
-
-
+        const { inboxId, messageCardId, amount, message, senderName, date, splitBetween } = req.body;
         // console.log(inboxId, messageCardId, amount, message, senderName, date, splitBetween);
 
 
-        // const newMessageCard = {
-        //     messageCardId: messageCardId,
-        //     amount: amount,
-        //     message: message,
-        //     senderName: senderName,
-        //     date: date
-        //     // splitBetween: splitBetween
-        // }
+        const newMessageCard = {
+            messageCardId: messageCardId,
+            amount: amount,
+            message: message,
+            senderName: senderName,
+            date: date,
+            splitBetween: splitBetween
+        }
+
+        await inboxsDataBase.findOneAndUpdate(
+            { _id:inboxId },
+            { $addToSet : {messageCard: newMessageCard }},
+            { upsert: true, new: true}
+        )
 
         res.status(200).json({
             userData: "message Sent"
