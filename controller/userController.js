@@ -5,7 +5,7 @@ module.exports.getMessage = async function getMessage(req, res) {
 
         const { inboxId } = req.body;
 
-        const inboxData = await inboxsDataBase.findOne({ _id:inboxId });
+        const inboxData = await inboxsDataBase.findOne({ _id: inboxId });
 
         res.status(200).json({
             inboxData: inboxData
@@ -31,9 +31,9 @@ module.exports.sentMessage = async function sentMessage(req, res) {
         }
 
         await inboxsDataBase.findOneAndUpdate(
-            { _id:inboxId },
-            { $addToSet : {messageCard: newMessageCard }},
-            { upsert: true, new: true}
+            { _id: inboxId },
+            { $addToSet: { messageCard: newMessageCard } },
+            { upsert: true, new: true }
         )
 
         res.status(200).json({
@@ -45,14 +45,25 @@ module.exports.sentMessage = async function sentMessage(req, res) {
     }
 }
 
+module.exports.getInboxList = async function getInboxList(req, res) {
+    try {
+
+        const { email } = req.body;
+        const inboxList = await inboxsDataBase.find({ "inboxMember.email": email });
+
+        res.status(200).json({
+            inboxList: inboxList
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports.createGroup = async function createGroup(req, res) {
     try {
 
         const { inboxName, inboxMember } = req.body;
 
-        // const authUserData  = await inboxsDataBase.findOne({ _id: '64286f7ec716de6d600f4645' });
-
-        // const inboxMember = req.body.inboxMember;
         inboxMember.push({ name: "authUserData.name", email: "authUserData.email" });
 
         const newGroupData = {
@@ -63,12 +74,6 @@ module.exports.createGroup = async function createGroup(req, res) {
 
         await inboxsDataBase.collection.insertOne(newGroupData);
 
-        // await inboxsDataBase.save(
-        //     { _id: req.body._id }, // filter
-        //     { $addToSet: { 'chatCard': newEntry } }, // update
-        //     { upsert: true, new: true } // conduction
-        // );
-
         res.status(200).json({
             userData: "group Created"
         });
@@ -76,6 +81,21 @@ module.exports.createGroup = async function createGroup(req, res) {
         console.log(err);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports.getUserData = async function getUserData(req, res) {
     try {
@@ -89,6 +109,7 @@ module.exports.getUserData = async function getUserData(req, res) {
         console.log(err);
     }
 }
+
 
 
 module.exports.getUserList = async function getUserList(req, res) {
