@@ -15,13 +15,13 @@ const port = 5000;
 app.listen(port);
 
 
-app.get("/getUserList", getUserList);
-app.get("/getInboxData/:indexId", getInboxData);
+// app.get("/getUserList", getUserList);
+app.get("/sentMessage", sentMessage);
 
-app.post("/createGroup", createGroup);
-app.post("/sentMessage", sentMessage);
+// app.post("/createGroup", createGroup);
+// app.get("/sentMessage", sentMessage);
 
-app.get("/getUserData", getUserData);
-app.post("/addUserData", addUserData);
+// app.get("/getUserData", getUserData);
+// app.post("/addUserData", addUserData);
 
 

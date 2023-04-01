@@ -12,18 +12,42 @@ mongoose.connect(db_link)
         console.log(err);
     })
 
-const datasheet = mongoose.Schema([{
+// const datasheet = mongoose.Schema([{
+//     email: { type: String, unique: true },
+//     name: String,
+//     chatCard: [
+//         {
+//             inboxType: String,
+//             inboxName: String,
+//             inboxMember: [],
+//             messageCard: []
+//         }
+//     ]
+// }])
+
+
+const usersTable = mongoose.Schema([{
     email: { type: String, unique: true },
-    name: String,
-    chatCard: [
-        {
-            inboxType: String,
-            inboxName : String,
-            inboxMember:[],
-            messageCard:[]
-        }
-    ]
+    name: String
 }])
 
-const db = mongoose.model("datasheet", datasheet);
-module.exports = { db };
+const inboxsTable = mongoose.Schema([{
+    inboxName: String,
+    inboxMember: [],
+    messageCard: []
+}])
+
+
+const usersDataBase = mongoose.model("usersTable", usersTable);
+const inboxsDataBase = mongoose.model("inboxsTable", inboxsTable);
+module.exports = { usersDataBase, inboxsDataBase };
+
+
+
+// ================messageCard============
+// messageCardId: String,
+// amount: String,
+// message: String,
+// senderName: String,
+// date: String,
+// splitBetween: []

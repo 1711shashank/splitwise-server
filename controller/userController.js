@@ -1,32 +1,30 @@
-const { db } = require('../models/mongoDB');
+const { inboxsDataBase } = require('../models/mongoDB');
 
 module.exports.sentMessage = async function sentMessage(req, res) {
     try {
 
-        const { userId, inboxId, messageCardId, amount, date, message, messageStatus } = req.body.newEntry;
+        const { email } = req.body;
 
-        const myData = await db.findOne({ _id: userId });
+        console.log(email);
 
-        const newMessageEntry = {
-            messageCardId: messageCardId,
-            senderName: myData.name,
-            amount: amount,
-            date: date,
-            message: message,
-            messageStatus: messageStatus
-        }
 
-        await db.findOneAndUpdate(
-            { _id: userId, "chatCard._id": inboxId },
-            { $addToSet: { 'chatCard.$.messageCard': newMessageEntry } },
-            { upsert: true, new: true }
-        );
+        // console.log(inboxId, messageCardId, amount, message, senderName, date, splitBetween);
 
-        console.log(await db.findOne({ _id: userId }));
+
+        // const newMessageCard = {
+        //     messageCardId: messageCardId,
+        //     amount: amount,
+        //     message: message,
+        //     senderName: senderName,
+        //     date: date
+        //     // splitBetween: splitBetween
+        // }
 
         res.status(200).json({
             userData: "message Sent"
         });
+
+
     } catch (err) {
         console.log(err);
     }
@@ -67,12 +65,10 @@ module.exports.getInboxData = async function getInboxData(req, res) {
 
         const inboxId = req.params.indexId;
 
-        console.log(inboxId);
-
         let inboxData = await db.findOne({ _id: '64230141bdb38307719b55c4', 'chatCard._id': inboxId }, { 'chatCard.$': 1 });
 
         res.status(200).json({
-            userData: inboxData
+            inboxData: inboxData.chatCard
         });
     } catch (err) {
         console.log(err);
@@ -90,7 +86,6 @@ module.exports.getUserData = async function getUserData(req, res) {
         console.log(err);
     }
 }
-
 
 
 module.exports.getUserList = async function getUserList(req, res) {
