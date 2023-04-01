@@ -1,11 +1,25 @@
 const { inboxsDataBase } = require('../models/mongoDB');
 
+module.exports.getMessage = async function getMessage(req, res) {
+    try {
+
+        const { inboxId } = req.body;
+
+        const inboxData = await inboxsDataBase.findOne({ _id:inboxId });
+
+        res.status(200).json({
+            inboxData: inboxData
+        });
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports.sentMessage = async function sentMessage(req, res) {
     try {
 
         const { inboxId, messageCardId, amount, message, senderName, date, splitBetween } = req.body;
-        // console.log(inboxId, messageCardId, amount, message, senderName, date, splitBetween);
-
 
         const newMessageCard = {
             messageCardId: messageCardId,
@@ -23,36 +37,37 @@ module.exports.sentMessage = async function sentMessage(req, res) {
         )
 
         res.status(200).json({
-            userData: "message Sent"
+            message: "message Sent"
         });
-
 
     } catch (err) {
         console.log(err);
     }
 }
+
 module.exports.createGroup = async function createGroup(req, res) {
     try {
 
-        const { _id, groupName, inboxMember } = req.body;
+        const { inboxName, inboxMember } = req.body;
 
-        const myData = await db.findOne({ _id: req.body._id });
+        // const authUserData  = await inboxsDataBase.findOne({ _id: '64286f7ec716de6d600f4645' });
 
         // const inboxMember = req.body.inboxMember;
-        inboxMember.push({ name: myData.name, email: myData.email });
+        inboxMember.push({ name: "authUserData.name", email: "authUserData.email" });
 
-        const newEntry = {
-            inboxType: 'GROUP',
-            inboxName: groupName,
+        const newGroupData = {
+            inboxName: inboxName,
             inboxMember: inboxMember,
             messageCard: []
         }
 
-        await db.findOneAndUpdate(
-            { _id: req.body._id }, // filter
-            { $addToSet: { 'chatCard': newEntry } }, // update
-            { upsert: true, new: true } // conduction
-        );
+        await inboxsDataBase.collection.insertOne(newGroupData);
+
+        // await inboxsDataBase.save(
+        //     { _id: req.body._id }, // filter
+        //     { $addToSet: { 'chatCard': newEntry } }, // update
+        //     { upsert: true, new: true } // conduction
+        // );
 
         res.status(200).json({
             userData: "group Created"
@@ -62,20 +77,6 @@ module.exports.createGroup = async function createGroup(req, res) {
     }
 }
 
-module.exports.getInboxData = async function getInboxData(req, res) {
-    try {
-
-        const inboxId = req.params.indexId;
-
-        let inboxData = await db.findOne({ _id: '64230141bdb38307719b55c4', 'chatCard._id': inboxId }, { 'chatCard.$': 1 });
-
-        res.status(200).json({
-            inboxData: inboxData.chatCard
-        });
-    } catch (err) {
-        console.log(err);
-    }
-}
 module.exports.getUserData = async function getUserData(req, res) {
     try {
 

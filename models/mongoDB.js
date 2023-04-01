@@ -12,20 +12,6 @@ mongoose.connect(db_link)
         console.log(err);
     })
 
-// const datasheet = mongoose.Schema([{
-//     email: { type: String, unique: true },
-//     name: String,
-//     chatCard: [
-//         {
-//             inboxType: String,
-//             inboxName: String,
-//             inboxMember: [],
-//             messageCard: []
-//         }
-//     ]
-// }])
-
-
 const usersTable = mongoose.Schema([{
     email: { type: String, unique: true },
     name: String
