@@ -3,11 +3,12 @@ const { db } = require('../models/mongoDB');
 module.exports.sentMessage = async function sentMessage(req, res) {
     try {
 
-        const { userId, inboxId, amount, date, message, messageStatus } = req.body.newEntry;
+        const { userId, inboxId, messageCardId, amount, date, message, messageStatus } = req.body.newEntry;
         
         const myData = await db.findOne({ _id : userId});
 
         const newMessageEntry = {
+            messageCardId : messageCardId,
             senderName: myData.name,
             amount: amount,
             date: date,
@@ -61,6 +62,25 @@ module.exports.createGroup = async function createGroup(req, res) {
     }
 }
 
+module.exports.getInboxData = async function getInboxData(req, res) {
+    try {
+
+        const inboxId = req.params.indexId;
+
+        console.log(inboxId);
+
+        let inboxData = await db.findOne({  });
+
+         console.log( inboxData );
+
+        
+        res.status(200).json({
+            userData : inboxData
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
 module.exports.getUserData = async function getUserData(req, res) {
     try {
 
@@ -73,6 +93,8 @@ module.exports.getUserData = async function getUserData(req, res) {
         console.log(err);
     }
 }
+
+
 
 module.exports.getUserList = async function getUserList(req, res) {
     try {
