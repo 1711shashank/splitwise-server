@@ -4,11 +4,11 @@ module.exports.sentMessage = async function sentMessage(req, res) {
     try {
 
         const { userId, inboxId, messageCardId, amount, date, message, messageStatus } = req.body.newEntry;
-        
-        const myData = await db.findOne({ _id : userId});
+
+        const myData = await db.findOne({ _id: userId });
 
         const newMessageEntry = {
-            messageCardId : messageCardId,
+            messageCardId: messageCardId,
             senderName: myData.name,
             amount: amount,
             date: date,
@@ -18,14 +18,14 @@ module.exports.sentMessage = async function sentMessage(req, res) {
 
         await db.findOneAndUpdate(
             { _id: userId, "chatCard._id": inboxId },
-            { $addToSet: { 'chatCard.$.messageCard': newMessageEntry } }, 
-            { upsert: true, new: true } 
+            { $addToSet: { 'chatCard.$.messageCard': newMessageEntry } },
+            { upsert: true, new: true }
         );
 
-        console.log(await db.findOne({ _id : userId}));
-        
+        console.log(await db.findOne({ _id: userId }));
+
         res.status(200).json({
-            userData : "message Sent"
+            userData: "message Sent"
         });
     } catch (err) {
         console.log(err);
@@ -34,28 +34,28 @@ module.exports.sentMessage = async function sentMessage(req, res) {
 module.exports.createGroup = async function createGroup(req, res) {
     try {
 
-        const { _id, groupName, inboxMember} = req.body;
-        
+        const { _id, groupName, inboxMember } = req.body;
+
         const myData = await db.findOne({ _id: req.body._id });
-        
+
         // const inboxMember = req.body.inboxMember;
-        inboxMember.push({ name : myData.name, email : myData.email });
+        inboxMember.push({ name: myData.name, email: myData.email });
 
         const newEntry = {
-            inboxType : 'GROUP',
-            inboxName : groupName,
-            inboxMember : inboxMember,
-            messageCard : []
+            inboxType: 'GROUP',
+            inboxName: groupName,
+            inboxMember: inboxMember,
+            messageCard: []
         }
 
         await db.findOneAndUpdate(
             { _id: req.body._id }, // filter
-            { $addToSet: { 'chatCard' : newEntry }}, // update
+            { $addToSet: { 'chatCard': newEntry } }, // update
             { upsert: true, new: true } // conduction
         );
-        
+
         res.status(200).json({
-            userData : "group Created"
+            userData: "group Created"
         });
     } catch (err) {
         console.log(err);
@@ -69,13 +69,10 @@ module.exports.getInboxData = async function getInboxData(req, res) {
 
         console.log(inboxId);
 
-        let inboxData = await db.findOne({  });
+        let inboxData = await db.findOne({ _id: '64230141bdb38307719b55c4', 'chatCard._id': inboxId }, { 'chatCard.$': 1 });
 
-         console.log( inboxData );
-
-        
         res.status(200).json({
-            userData : inboxData
+            userData: inboxData
         });
     } catch (err) {
         console.log(err);
@@ -87,7 +84,7 @@ module.exports.getUserData = async function getUserData(req, res) {
         let userData = await db.find();
 
         res.status(200).json({
-            userData : userData[0]
+            userData: userData[0]
         });
     } catch (err) {
         console.log(err);
@@ -101,12 +98,12 @@ module.exports.getUserList = async function getUserList(req, res) {
 
         const userDataList = await db.find();
 
-        const updatedUserDataList = userDataList.filter( (user) => user.email !== 'groupInd@gmail.com');
+        const updatedUserDataList = userDataList.filter((user) => user.email !== 'groupInd@gmail.com');
 
         let userList = updatedUserDataList.map(({ name, email }) => ({ name, email }));
 
         res.status(200).json({
-            userList : userList
+            userList: userList
         });
 
     } catch (err) {
@@ -119,13 +116,13 @@ module.exports.addUserData = async function addUserData(req, res) {
         const { email, name, chatCard } = req.body;
 
         await db.collection.insertOne({
-            email: email, 
-            name: name, 
-            chatCard: chatCard 
-        } );
+            email: email,
+            name: name,
+            chatCard: chatCard
+        });
 
         res.status(200).json({
-            Message : "User data added successfully"
+            Message: "User data added successfully"
         });
 
     } catch (err) {
