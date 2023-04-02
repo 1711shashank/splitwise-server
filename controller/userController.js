@@ -1,6 +1,7 @@
 const { inboxsDataBase } = require('../models/mongoDB');
+const { usersDataBase } = require('../models/mongoDB');
 
-module.exports.getMessage = async function getMessage(req, res) {
+module.exports.getMessages = async function getMessages(req, res) {
     try {
 
         const { inboxId } = req.body;
@@ -19,7 +20,7 @@ module.exports.getMessage = async function getMessage(req, res) {
 module.exports.sentMessage = async function sentMessage(req, res) {
     try {
 
-        const { inboxId, messageCardId, amount, message, senderName, date, splitBetween } = req.body;
+        const { inboxId, messageCardId, amount, message, senderName, date, splitBetween } = req.body.newMessage;
 
         const newMessageCard = {
             messageCardId: messageCardId,
@@ -94,30 +95,12 @@ module.exports.createGroup = async function createGroup(req, res) {
 
 
 
-
-
-
-module.exports.getUserData = async function getUserData(req, res) {
-    try {
-
-        let userData = await db.find();
-
-        res.status(200).json({
-            userData: userData[0]
-        });
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-
-
 module.exports.getUserList = async function getUserList(req, res) {
     try {
 
-        const userDataList = await db.find();
+        const userDataList = await usersDataBase.find();
 
-        const updatedUserDataList = userDataList.filter((user) => user.email !== 'groupInd@gmail.com');
+        const updatedUserDataList = userDataList.filter((user) => user.email !== "authUserData.email");
 
         let userList = updatedUserDataList.map(({ name, email }) => ({ name, email }));
 
