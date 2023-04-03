@@ -1,4 +1,6 @@
 const express = require("express");
+
+const { authenticateToken } = require("./middleware/middleware");
 const { oauth, validateCallback } = require("./controller/authController");
 const { sentMessage, getMessages, getInboxList, createGroup, getUserList } = require('./controller/userController');
 
@@ -15,13 +17,16 @@ const port = 5000;
 app.listen(port);
 
 
-app.post("/getMessages", getMessages);
-app.post("/getInboxList", getInboxList);
-
-app.post("/sentMessage", sentMessage);
-app.post("/createGroup", createGroup);
-app.get("/getUserList", getUserList);
-
 
 app.get("/oauth", oauth);
 app.get("/validate-callback", validateCallback);
+
+
+app.post("/getMessages", authenticateToken, getMessages);
+app.post("/getInboxList", authenticateToken, getInboxList);
+
+app.post("/sentMessage", authenticateToken, sentMessage);
+app.post("/createGroup", authenticateToken, createGroup);
+app.get("/getUserList", authenticateToken, getUserList);
+
+

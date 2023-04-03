@@ -14,7 +14,8 @@ mongoose.connect(db_link)
 
 const usersTable = mongoose.Schema([{
     email: { type: String, unique: true },
-    name: String
+    name: String,
+    jwtToken: String
 }])
 
 const inboxsTable = mongoose.Schema([{

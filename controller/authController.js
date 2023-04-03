@@ -1,5 +1,21 @@
 const axios = require("axios");
 const qs = require("qs");
+const jwt = require('jsonwebtoken');
+const { usersDataBase } = require('../models/mongoDB');
+
+
+
+const createJwtToken = async (userInfo) => {
+    const jwtToken = jwt.sign({ payload: userInfo.data.email }, process.env.JWT_SECRET_KEY, { expiresIn: '12h' });
+
+    await usersDataBase.findOneAndUpdate(
+        {},
+        { jwtToken: jwtToken, email: userInfo.data.email, name: userInfo.data.name },
+        { upsert: true, new: true }
+    )
+
+    return jwtToken;
+}
 
 exports.validateCallback = async (req, res) => {
     try {
@@ -18,7 +34,7 @@ exports.validateCallback = async (req, res) => {
         let config = {
             method: "post",
             url: "https://oauth2.googleapis.com/token",
-            headers: {"Content-Type": "application/x-www-form-urlencoded" },
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
             data: qs.stringify(data),
         };
 
@@ -36,9 +52,10 @@ exports.validateCallback = async (req, res) => {
 
         const userInfo = await axios(configs);
 
-        return res.redirect(
-            `http://localhost:3000/?email=${userInfo.data.email}&name=${userInfo.data.name}`
-        )
+        authToken = await createJwtToken(userInfo);
+        console.log(authToken);
+
+        return res.redirect(`http://localhost:3000/?authToken=${authToken}`);
 
     } catch (error) {
         console.log(error);
