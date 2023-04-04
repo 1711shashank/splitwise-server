@@ -27,6 +27,6 @@ app.post("/getInboxList", authenticateToken, getInboxList);
 
 app.post("/sentMessage", authenticateToken, sentMessage);
 app.post("/createGroup", authenticateToken, createGroup);
-app.get("/getUserList", authenticateToken, getUserList);
+app.post("/getUserList", authenticateToken, getUserList);
 
 

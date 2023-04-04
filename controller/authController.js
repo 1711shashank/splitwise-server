@@ -30,7 +30,7 @@ exports.validateCallback = async (req, res) => {
             grant_type: "authorization_code",
             redirect_uri: googleRedirectUrl,
         };
-        console.dir({ data }, { depth: null });
+        // console.dir({ data }, { depth: null });
         let config = {
             method: "post",
             url: "https://oauth2.googleapis.com/token",
@@ -38,7 +38,7 @@ exports.validateCallback = async (req, res) => {
             data: qs.stringify(data),
         };
 
-        console.dir({ config }, { depth: null });
+        // console.dir({ config }, { depth: null });
 
         const response = await axios(config);
 
@@ -53,7 +53,7 @@ exports.validateCallback = async (req, res) => {
         const userInfo = await axios(configs);
 
         authToken = await createJwtToken(userInfo);
-        console.log(authToken);
+        // console.log(authToken);
 
         return res.redirect(`http://localhost:3000/?authToken=${authToken}`);
 

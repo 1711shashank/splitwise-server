@@ -2,34 +2,26 @@ const jwt = require('jsonwebtoken');
 const { usersDataBase } = require('../models/mongoDB');
 
 exports.authenticateToken = async(req, res, next) => {
-    const { authorization } = req.headers;
 
-    if (!authorization) {
+    const { authToken } = req.body;
+
+    if (!authToken) {
         res.status(405).json({
             title: "Invalid Request",
             message: "Please Check the Request Header Token Mismatch"
         });
         return
     }
-    if (!authorization.startsWith("Bearer ")) {
-        res.status(405).json({
-            title: "Invalid Request",
-            message: "Hearder not Started with bearer"
-        });
-        return
-    }
 
-    const token = authorization.replace('Bearer ', '')
     let result;
 
     try {
-        result = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        result = jwt.verify(authToken, process.env.JWT_SECRET_KEY);
     } catch (e) {
         res.status(422).json({
             status: 'FAILURE',
             message: 'Token Validation Failed! Invalid Token',
         })
-        return
     }
 
     if (!result) {
@@ -37,25 +29,22 @@ exports.authenticateToken = async(req, res, next) => {
             title: "Token Mismatch",
             message: "Please Check the Request Header Token Mismatch"
         });
-        return
     }
 
-    let usersDataBase = await usersDataBase.findOne({ _id: result.payload });
-    req.headers.email=usersDataBase.email;
+    let userData = await usersDataBase.findOne({ email: result.payload });
+    req.headers.email=userData.email;
 
-    if (!usersDataBase) {
+    if (!userData) {
         res.status(403).json({
             title: "Invalid Request",
-            message: "usersDataBase Not Exists in DocValidationApi If you are facing any issue drop a mail team.docvalidation@gmail.com our team will respond you within 24 hrs"
+            message: "user Data does Not Exists in the database"
         });
-        return
     }
-    if (usersDataBase.token != token) {
+    if (userData.jwtToken != authToken) {
         res.status(405).json({
             title: "Token Mismatch in Database",
             message: "Please Check the Request Header Token Mismatch"
         });
-        return
     }
     next();
 }

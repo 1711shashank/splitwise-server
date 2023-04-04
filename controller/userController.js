@@ -49,7 +49,7 @@ module.exports.sentMessage = async function sentMessage(req, res) {
 module.exports.getInboxList = async function getInboxList(req, res) {
     try {
 
-        const { email } = req.body;
+        const email = req.headers.email;
         const inboxList = await inboxsDataBase.find({ "inboxMember.email": email });
 
         res.status(200).json({
@@ -60,12 +60,16 @@ module.exports.getInboxList = async function getInboxList(req, res) {
     }
 }
 
+
 module.exports.createGroup = async function createGroup(req, res) {
     try {
 
         const { inboxName, inboxMember } = req.body;
+        const email = req.headers.email;
 
-        inboxMember.push({ name: "authUserData.name", email: "authUserData.email" });
+        const userData = await usersDataBase.findOne({ email: email });
+
+        inboxMember.push({ name: userData.name, email: email });
 
         const newGroupData = {
             inboxName: inboxName,
@@ -83,24 +87,14 @@ module.exports.createGroup = async function createGroup(req, res) {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 module.exports.getUserList = async function getUserList(req, res) {
     try {
 
+        const email = req.headers.email;
+        
         const userDataList = await usersDataBase.find();
 
-        const updatedUserDataList = userDataList.filter((user) => user.email !== "authUserData.email");
+        const updatedUserDataList = userDataList.filter((user) => user.email !== email);
 
         let userList = updatedUserDataList.map(({ name, email }) => ({ name, email }));
 
@@ -113,21 +107,3 @@ module.exports.getUserList = async function getUserList(req, res) {
     }
 }
 
-module.exports.addUserData = async function addUserData(req, res) {
-    try {
-        const { email, name, chatCard } = req.body;
-
-        await db.collection.insertOne({
-            email: email,
-            name: name,
-            chatCard: chatCard
-        });
-
-        res.status(200).json({
-            Message: "User data added successfully"
-        });
-
-    } catch (err) {
-        console.log(err);
-    }
-}
