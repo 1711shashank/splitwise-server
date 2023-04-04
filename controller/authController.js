@@ -53,9 +53,8 @@ exports.validateCallback = async (req, res) => {
         const userInfo = await axios(configs);
 
         authToken = await createJwtToken(userInfo);
-        // console.log(authToken);
 
-        return res.redirect(`http://localhost:3000/?authToken=${authToken}`);
+        return res.redirect(`http://localhost:3000/?authToken=${authToken}&email=${userInfo.data.email}`);
 
     } catch (error) {
         console.log(error);

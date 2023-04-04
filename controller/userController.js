@@ -20,13 +20,18 @@ module.exports.getMessages = async function getMessages(req, res) {
 module.exports.sentMessage = async function sentMessage(req, res) {
     try {
 
-        const { inboxId, messageCardId, amount, message, senderName, date, splitBetween } = req.body.newMessage;
+        const { inboxId, messageCardId, amount, message, date, splitBetween } = req.body.newMessage;
+
+        const email = req.headers.email;
+        
+        const userData = await usersDataBase.findOne({ email: email }); 
 
         const newMessageCard = {
             messageCardId: messageCardId,
             amount: amount,
             message: message,
-            senderName: senderName,
+            senderName: userData.name,
+            senderEmail: userData.email,
             date: date,
             splitBetween: splitBetween
         }
