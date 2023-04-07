@@ -54,7 +54,7 @@ exports.validateCallback = async (req, res) => {
 
         authToken = await createJwtToken(userInfo);
 
-        return res.redirect(`https://splitwise-e4an.onrender.com/?authToken=${authToken}&email=${userInfo.data.email}`);
+        return res.redirect(`https://splitwise-client.onrender.com/?authToken=${authToken}&email=${userInfo.data.email}`);
 
     } catch (error) {
         console.log(error);
