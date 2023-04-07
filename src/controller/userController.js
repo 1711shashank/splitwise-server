@@ -13,7 +13,10 @@ module.exports.getMessages = async function getMessages(req, res) {
         });
 
     } catch (err) {
-        console.log(err);
+        res.status(405).json({
+            status: 'FAILURE',
+            message: 'getInboxList'
+        })
     }
 }
 
@@ -47,7 +50,10 @@ module.exports.sentMessage = async function sentMessage(req, res) {
         });
 
     } catch (err) {
-        console.log(err);
+        res.status(405).json({
+            status: 'FAILURE',
+            message: 'getInboxList'
+        })
     }
 }
 
@@ -61,7 +67,10 @@ module.exports.getInboxList = async function getInboxList(req, res) {
             inboxList: inboxList
         });
     } catch (err) {
-        console.log(err);
+        res.status(405).json({
+            status: 'FAILURE',
+            message: 'getInboxList'
+        })
     }
 }
 
@@ -88,7 +97,10 @@ module.exports.createGroup = async function createGroup(req, res) {
             userData: "group Created"
         });
     } catch (err) {
-        console.log(err);
+        res.status(405).json({
+            status: 'FAILURE',
+            message: 'getInboxList'
+        })
     }
 }
 
@@ -108,7 +120,10 @@ module.exports.getUserList = async function getUserList(req, res) {
         });
 
     } catch (err) {
-        console.log(err);
+        res.status(405).json({
+            status: 'FAILURE',
+            message: 'getInboxList'
+        })
     }
 }
 
