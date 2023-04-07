@@ -4,16 +4,16 @@ const jwt = require('jsonwebtoken');
 const { usersDataBase } = require('../models/mongoDB');
 
 
-
 const createJwtToken = async (userInfo) => {
-    const jwtToken = jwt.sign({ payload: userInfo.data.email }, process.env.JWT_SECRET_KEY, { expiresIn: '12h' });
+
+    const jwtToken = jwt.sign({ payload: userInfo.data.email }, process.env.JWT_SECRET_KEY);
 
     await usersDataBase.findOneAndUpdate(
-        {},
-        { jwtToken: jwtToken, email: userInfo.data.email, name: userInfo.data.name },
+        { email: userInfo.data.email },
+        { $set: { email: userInfo.data.email, name: userInfo.data.name, jwtToken: jwtToken} },
         { upsert: true, new: true }
-    )
-
+    );
+    
     return jwtToken;
 }
 
@@ -21,7 +21,7 @@ exports.validateCallback = async (req, res) => {
     try {
         const { code } = req.query;
 
-        const googleRedirectUrl = 'http://localhost:5000/validate-callback';
+        const googleRedirectUrl = 'https://splitwise-server.onrender.com/validate-callback';
 
         const data = {
             client_id: process.env.GOOGLE_CLIENT_ID,
@@ -54,7 +54,7 @@ exports.validateCallback = async (req, res) => {
 
         authToken = await createJwtToken(userInfo);
 
-        return res.redirect(`http://localhost:3000/?authToken=${authToken}&email=${userInfo.data.email}`);
+        return res.redirect(`https://splitwise-e4an.onrender.com/?authToken=${authToken}&email=${userInfo.data.email}`);
 
     } catch (error) {
         console.log(error);
@@ -65,7 +65,7 @@ exports.validateCallback = async (req, res) => {
 exports.oauth = async (req, res) => {
     console.log('auth');
     const options = {
-        redirect_uri: `http://localhost:5000/validate-callback`,
+        redirect_uri: `https://splitwise-server.onrender.com/validate-callback`,
         client_id: process.env.GOOGLE_CLIENT_ID,
         access_type: "offline",
         response_type: "code",

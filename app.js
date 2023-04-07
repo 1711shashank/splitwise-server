@@ -1,8 +1,8 @@
 const express = require("express");
 
-const { authenticateToken } = require("./middleware/middleware");
-const { oauth, validateCallback } = require("./controller/authController");
-const { sentMessage, getMessages, getInboxList, createGroup, getUserList } = require('./controller/userController');
+const { authenticateToken } = require("./src/middleware/middleware");
+const { oauth, validateCallback } = require("./src/controller/authController");
+const { sentMessage, getMessages, getInboxList, createGroup, getUserList } = require('./src/controller/userController');
 
 const app = express();
 var cors = require("cors");
